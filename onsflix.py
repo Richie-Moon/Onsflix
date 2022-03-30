@@ -1,6 +1,7 @@
 # onsflix.py
 # Richie Moon, 29/3/2022
 
+
 def print_menu():
     """Prints the main menu with the different options. """
     print("=" * 11)
@@ -19,10 +20,10 @@ def print_menu():
     print("=" * 11)
 
 
-def valid_choice(user_input):
+def valid_choice(user_input) -> bool:
     valid_answers = ['a', 'd', 'e', 'l', 'q']
     try:
-        user_input.lower().strip()
+        user_input = user_input.lower().strip()
         if user_input in valid_answers:
             return True
         else:
@@ -46,4 +47,7 @@ def main():
             user_choice = input("Enter a choice: ")
             valid_answer = valid_choice(user_choice)
 
+        print("Do stuff")
 
+
+main()
