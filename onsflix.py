@@ -8,6 +8,12 @@ from datetime import timedelta
 movies = {}
 
 
+def format_time(time):
+    # Stole Code from
+    # https://stackoverflow.com/questions/1784952/how-get-hoursminutes/33964397
+    return str(timedelta(minutes=time))[:-3]
+
+
 def print_menu():
     """Prints the main menu with the different options. """
     print("=" * 11)
@@ -68,9 +74,8 @@ def add_movie():
         except ValueError:
             print("    Please enter an integer for the length.\n")
     print("    " + "-" * 17)
-    # Stole Code from
-    # https://stackoverflow.com/questions/1784952/how-get-hoursminutes/33964397
-    formatted_time = str(timedelta(minutes=length))[:-3]
+
+    formatted_time = format_time(length)
     movies.update({title: formatted_time})
     print(f"    Added '{title}' ({formatted_time})\n")
 
@@ -90,8 +95,8 @@ def delete_movie():
             break
 
     print(f"\n    Are you sure you want to delete {title}?"
-           "\n    Once deleted, this movie cannot be recovered."
-           "\n    Type 'yes' to confirm. ")
+          "\n    Once deleted, this movie cannot be recovered."
+          "\n    Type 'yes' to confirm. ")
     confirm = input("\n    > Confirm: ").lower().strip()
 
     if confirm == 'yes':
@@ -104,7 +109,7 @@ def delete_movie():
 
 def list_movies():
     """Lists all the current movies in the movies dictionary. """
-    print('    ' + '-' * 18)
+    print('\n    ' + '-' * 18)
     print("        🎬 MOVIES")
     print('    ' + '-' * 18)
 
@@ -116,6 +121,34 @@ def list_movies():
         for key, value in movies.items():
             print(f"    {list_of_keys.index(key) + 1}. {key} ({value})")
         print()
+
+
+def edit_length():
+    print("\n    " + "-" * 18)
+    print("      ✂ EDIT LENGTH")
+    print("    " + "-" * 18)
+    movie = input("    > Title of Movie you want to edit: ")
+
+    while True:
+        if movie not in movies:
+            print("    That movie was not found. \n")
+            movie = input("    > Title of Movie you want to edit: ")
+        else:
+            break
+
+    print(f"    '{movie}' is currently {movies[movie]}. \n")
+
+    while True:
+        try:
+            length = int(input("    > New Length (Minutes): "))
+            formatted_time = format_time(length)
+            old_length = movies[movie]
+            movies[movie] = formatted_time
+            print("    " + "-" * 18)
+            print(f"    Edited '{movie}' ({old_length} -> {formatted_time})")
+            break
+        except ValueError:
+            print("    Please provide an integer. \n")
 
 
 def main():
@@ -134,7 +167,8 @@ def main():
             valid_answer = valid_choice(user_choice)
 
         menu_choice = [['a', 'd', 'l', 'e', 'q'],
-                       [add_movie, delete_movie, list_movies]]
+                       [add_movie, delete_movie, list_movies, edit_length,
+                        exit]]
 
         index = menu_choice[0].index(user_choice)
         menu_choice[1][index]()
