@@ -9,6 +9,8 @@ movies = {}
 
 
 def format_time(time):
+    """Takes in an input 'time' in minutes and returns the formatted time as
+    HH:MM. """
     # Stole Code from
     # https://stackoverflow.com/questions/1784952/how-get-hoursminutes/33964397
     return str(timedelta(minutes=time))[:-3]
@@ -124,6 +126,10 @@ def list_movies():
 
 
 def edit_length():
+    """Asks the user for the name of the movie they want to edit and checks if
+    it is in movies. If it is, ask the user for the new length, check that it
+    is valid, and format the time. Update the dictionary with the new value."""
+
     print("\n    " + "-" * 18)
     print("      ✂ EDIT LENGTH")
     print("    " + "-" * 18)
@@ -145,10 +151,15 @@ def edit_length():
             old_length = movies[movie]
             movies[movie] = formatted_time
             print("    " + "-" * 18)
-            print(f"    Edited '{movie}' ({old_length} -> {formatted_time})")
+            print(f"\n    Edited '{movie}' ({old_length} -> {formatted_time})")
             break
         except ValueError:
             print("    Please provide an integer. \n")
+
+
+def exit_program():
+    print("Thank you for using Onsflix!")
+    quit()
 
 
 def main():
@@ -168,7 +179,7 @@ def main():
 
         menu_choice = [['a', 'd', 'l', 'e', 'q'],
                        [add_movie, delete_movie, list_movies, edit_length,
-                        exit]]
+                        exit_program]]
 
         index = menu_choice[0].index(user_choice)
         menu_choice[1][index]()
