@@ -8,6 +8,15 @@ from datetime import timedelta
 movies = {}
 
 
+def valid_time(time):
+    SHORTEST_LENGTH = 2
+    LONGEST_LENGTH = 5100
+    if SHORTEST_LENGTH < time <LONGEST_LENGTH:
+        return True
+    else:
+        return False
+
+
 def format_time(time):
     """Takes in an input 'time' in minutes and returns the formatted time as
     HH:MM. """
@@ -50,9 +59,6 @@ def add_movie():
     HH:MM and return a dict with the kay as the title and the value as the
     length"""
 
-    SHORTEST_LENGTH = 2
-    LONGEST_LENGTH = 5100
-
     print("\n    " + "-" * 17)
     print("      ➕ ADD MOVIE")
     print("    " + "-" * 17)
@@ -68,7 +74,7 @@ def add_movie():
     while True:
         try:
             length = int(input("    > Length (Minutes): "))
-            if SHORTEST_LENGTH < length < LONGEST_LENGTH:
+            if valid_time(length) is True:
                 break
             else:
                 print("    Please enter a valid movie length. \n")
@@ -146,7 +152,12 @@ def edit_length():
 
     while True:
         try:
-            length = int(input("    > New Length (Minutes): "))
+            while True:
+                length = int(input("    > New Length (Minutes): "))
+                if valid_time(length) is True:
+                    break
+                else:
+                    print("    Please enter a valid time. ")
             formatted_time = format_time(length)
             old_length = movies[movie]
             movies[movie] = formatted_time
