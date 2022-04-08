@@ -148,12 +148,12 @@ def edit_length():
         else:
             break
 
-    print(f"    '{movie}' is currently {movies[movie]}. \n")
+    print(f"    '{movie}' is currently {movies[movie]}. ")
 
     while True:
         try:
             while True:
-                length = int(input("    > New Length (Minutes): "))
+                length = int(input("\n    > New Length (Minutes): "))
                 if valid_time(length) is True:
                     break
                 else:
