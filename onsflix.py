@@ -126,7 +126,9 @@ def list_movies():
     if len(movies) == 0:
         print("    No movies to show. \n")
     else:
-        list_of_keys = list(movies.keys())
+        list_of_keys = []
+        for key in movies.keys():
+            list_of_keys.append(key)
 
         for key, value in movies.items():
             print(f"    {list_of_keys.index(key) + 1}. {key} ({value})")
