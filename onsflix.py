@@ -11,7 +11,7 @@ movies = {}
 def valid_time(time):
     SHORTEST_LENGTH = 2
     LONGEST_LENGTH = 5100
-    if SHORTEST_LENGTH < time <LONGEST_LENGTH:
+    if SHORTEST_LENGTH <= time <= LONGEST_LENGTH:
         return True
     else:
         return False
@@ -68,6 +68,8 @@ def add_movie():
         if title in movies:
             print("    That movie already exists. "
                   "Please enter a unique movie name. \n")
+        elif title.isspace() is True or title == "":
+            print("    Please enter a valid title. \n")
         else:
             break
 
