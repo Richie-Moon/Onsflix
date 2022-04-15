@@ -68,7 +68,7 @@ def add_movie():
         if title in movies:
             print("    That movie already exists. "
                   "Please enter a unique movie name. \n")
-        elif title.isspace() is True or title == "":
+        elif title.isspace() is True or title == "" or title is None:
             print("    Please enter a valid title. \n")
         else:
             break
@@ -99,7 +99,9 @@ def delete_movie():
 
     while True:
         title = input("    > Title: ")
-        if title not in movies:
+        if title.isspace() is True or title == "" or title is None:
+            print("    Please enter a valid Title")
+        elif title not in movies:
             print("    That movie doesn't exist.\n")
         else:
             break
@@ -127,10 +129,12 @@ def list_movies():
         print("    No movies to show. \n")
     else:
         list_of_keys = []
-        for key in movies.keys():
-            list_of_keys.append(key)
+        for movie in movies:
+            list_of_keys.append(movie)
+        list_of_keys = sorted(list_of_keys)
 
-        for key, value in movies.items():
+        list_of_movies = sorted(movies.items())
+        for key, value in list_of_movies:
             print(f"    {list_of_keys.index(key) + 1}. {key} ({value})")
         print()
 
@@ -158,7 +162,10 @@ def edit_length():
         try:
             while True:
                 length = int(input("\n    > New Length (Minutes): "))
-                if valid_time(length) is True:
+                if movies[movie] == format_time(length):
+                    print("    This is already the length of the movie. "
+                          "Please enter a different time. ")
+                elif valid_time(length) is True:
                     break
                 else:
                     print("    Please enter a valid time. ")
@@ -169,7 +176,7 @@ def edit_length():
             print(f"\n    Edited '{movie}' ({old_length} -> {formatted_time})")
             break
         except ValueError:
-            print("    Please provide an integer. \n")
+            print("    Please provide an integer. ")
 
 
 def exit_program():
