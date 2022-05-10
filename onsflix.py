@@ -1,210 +1,170 @@
-# onsflix.py
-# Richie Moon, 29/3/2022
+# egg_shop.py
+# Richie Moon
+# 9/5/2022
+# A program to keep track of egg inventory, adding stock, dividing stock into
+# different size cartons and selling eggs to customers.
 
-# Imports
-from datetime import timedelta
+# The list of stock. They are in the format {size: quantity}.
+stock = {4: 80,
+         5: 0,
+         6: 0,
+         7: 0,
+         8: 0}
 
-# Variables
-movies = {}
+
+def print_line():
+    """Prints 17 = signs. """
+    print("=" * 17)
 
 
-def valid_time(time):
-    SHORTEST_LENGTH = 2
-    LONGEST_LENGTH = 5100
-    if SHORTEST_LENGTH <= time <= LONGEST_LENGTH:
+def enter_size() -> int:
+    """Asks the user for the size and checks that it is valid. Will return a
+    valid size, as an int. """
+    while True:
+        try:
+            size = int(input("    > Enter Size (4-8): "))
+            MAX_SIZE = 8
+            MIN_SIZE = 4
+            if MIN_SIZE <= size <= MAX_SIZE:
+                return size
+            else:
+                print("    Please enter a valid size. \n")
+        except ValueError:
+            print("    Please enter an integer. \n")
+
+
+def enter_quantity(input_message: str = None) -> int:
+    """Asks the user for the quantity and checks that it is valid. Will return
+    the quantity as an int. """
+    while True:
+        try:
+            if input_message is None:
+                quantity = int(input("    > Enter quantity: "))
+            else:
+                quantity = int(input(f"   > {input_message}: "))
+
+            MIN_SIZE = 1
+            if quantity >= MIN_SIZE:
+                return quantity
+            else:
+                print("\n    Please enter a valid quantity. ")
+        except ValueError:
+            print("    Please enter an integer. \n")
+
+
+def print_menu():
+    """Will print the main menu and menu items when called. """
+    print_line()
+    print("   🥚 EGGSHOP")
+    print_line()
+    menu_items = {"A": "Add Eggs to Stock.",
+                  "E": "Edit egg stock and possible combinations. ",
+                  "L": "List stock. ",
+                  "S": "Sell Eggs. ",
+                  "R": "View receipts. ",
+                  "Q": "Quit. "}
+    for key, value in menu_items.items():
+        print(f"{key}: {value}")
+    print_line()
+
+
+def is_valid_choice(choice: str) -> bool:
+    """Takes an input 'choice' and checks if it in the list of valid_choices.
+    Return True if it is, False if it isn't. """
+
+    valid_choices = ["a", "e", "l", "s", "r", "q"]
+    if choice in valid_choices:
         return True
     else:
         return False
 
 
-def format_time(time):
-    """Takes in an input 'time' in minutes and returns the formatted time as
-    HH:MM. """
-    # Stole Code from
-    # https://stackoverflow.com/questions/1784952/how-get-hoursminutes/33964397
-    return str(timedelta(minutes=time))[:-3]
-
-
-def print_menu():
-    """Prints the main menu with the different options. """
-    print("=" * 11)
-    print("  Onsflix")
-    print("=" * 11)
-    menu_items = {"A": "Add a movie",
-                  "D": "Delete a movie",
-                  "E": "Edit the length if a movie",
-                  "L": "List all the movies and their times.",
-                  "Q": "Quit"}
-    for key, value in menu_items.items():
-        print(f"{key}: {value}")
-    print("=" * 11)
-
-
-def valid_choice(user_input) -> bool:
-    """Checks if the user has entered a valid input. Returns True if it is,
-    False if it isn't."""
-    valid_answers = ['a', 'd', 'e', 'l', 'q']
-    try:
-        user_input = user_input.lower().strip()
-        if user_input in valid_answers:
-            return True
-        else:
-            return False
-    except Exception:
-        return False
-
-
-def add_movie():
-    """Asks the user for the title and length of the movie. Format length to
-    HH:MM and return a dict with the kay as the title and the value as the
-    length"""
-
+def add_stock():
+    """Will ask the user for the size and quantity to increase stock by."""
     print("\n    " + "-" * 17)
-    print("      ➕ ADD MOVIE")
+    print("       ➕ ADD EGGS")
     print("    " + "-" * 17)
 
-    while True:
-        title = input("    > Title: ")
-        if title in movies:
-            print("    That movie already exists. "
-                  "Please enter a unique movie name. \n")
-        elif title.isspace() is True or title == "" or title is None:
-            print("    Please enter a valid title. \n")
-        else:
-            break
+    # Call the enter_size and enter_quantity functions to ask the user for the
+    # size and quantity.
+    size = enter_size()
+    quantity = enter_quantity()
 
-    while True:
-        try:
-            length = int(input("    > Length (Minutes): "))
-            if valid_time(length) is True:
-                break
+    # Adds the quantity provided by the user to the quantity in the stocks
+    # dictionary.
+    stock[size] += quantity
+    print("    " + "-" * 17)
+    print(f"    Added {quantity}x size {size} eggs. \n")
+
+
+def edit_stock():
+    """Will edit the number of eggs in the stock by the amount that the user
+    enters. """
+    print("    " + "-" * 17)
+    print("      ✂️ EDIT STOCK")
+    print('    ' + '-' * 17)
+
+    size = enter_size()
+    print(f"    There are currently {stock[size]}x size {size} eggs. \n")
+
+    quantity = enter_quantity("Enter new quantity")
+    print('    ' + '-' * 17)
+
+    stock[size] = quantity
+
+    print(f"    In Stock: {stock[size]}x size {size} eggs. \n")
+
+
+def list_stock():
+    """Prints the number of eggs are in stock for each size and also displays
+     how many cartons of 6, 12 and 24 can be made using the number on hand. """
+    print("    " + '-' * 17)
+    print("      🍳 COMBINATIONS")
+    print("    " + '-' * 17)
+
+    # For every size in stock, print the size and the total number of eggs in 
+    # that size. Then, for every carton/tray size, check if it is 24. If it is, 
+    # print Trays of 24, and then how many we can make. Do the same with 6 and
+    # 12 except print 'Cartons' instead of 'Trays'. 
+    cartons = [6, 12, 24]
+    for size in stock:
+        print(f"    Size {size}: {stock[size]}x")
+        for i in cartons:
+            if i == 24:
+                print(f"        - Trays of {i}: {int(stock[size] / i)}x")
             else:
-                print("    Please enter a valid movie length. \n")
-
-        except ValueError:
-            print("    Please enter an integer for the length.\n")
-    print("    " + "-" * 17)
-
-    formatted_time = format_time(length)
-    movies.update({title: formatted_time})
-    print(f"    Added '{title}' ({formatted_time})\n")
-
-
-def delete_movie():
-    """Asks the user for the title of the movie, checks if it is in movies
-    and then asks for a confirmation. Deletes the movie after confirmation."""
-    print("\n    " + "-" * 18)
-    print("      🗑 DELETE MOVIE")
-    print("    " + "-" * 18)
-
-    while True:
-        title = input("    > Title: ")
-        if title.isspace() is True or title == "" or title is None:
-            print("    Please enter a valid Title")
-        elif title not in movies:
-            print("    That movie doesn't exist.\n")
-        else:
-            break
-
-    print(f"\n    Are you sure you want to delete {title}?"
-          "\n    Once deleted, this movie cannot be recovered."
-          "\n    Type 'yes' to confirm. ")
-    confirm = input("\n    > Confirm: ").lower().strip()
-
-    if confirm == 'yes':
-        del movies[title]
-        print("    " + "-" * 18)
-        print(f"\n   Deleted '{title}'\n")
-    else:
-        print("\n    Confirmation Failed. No movies were deleted. \n")
-
-
-def list_movies():
-    """Lists all the current movies in the movies dictionary. """
-    print('\n    ' + '-' * 18)
-    print("        🎬 MOVIES")
-    print('    ' + '-' * 18)
-
-    if len(movies) == 0:
-        print("    No movies to show. \n")
-    else:
-        list_of_keys = []
-        for movie in movies:
-            list_of_keys.append(movie)
-        list_of_keys = sorted(list_of_keys)
-
-        list_of_movies = sorted(movies.items())
-        for key, value in list_of_movies:
-            print(f"    {list_of_keys.index(key) + 1}. {key} ({value})")
-        print()
-
-
-def edit_length():
-    """Asks the user for the name of the movie they want to edit and checks if
-    it is in movies. If it is, ask the user for the new length, check that it
-    is valid, and format the time. Update the dictionary with the new value."""
-
-    print("\n    " + "-" * 18)
-    print("      ✂ EDIT LENGTH")
-    print("    " + "-" * 18)
-    movie = input("    > Title of Movie you want to edit: ")
-
-    while True:
-        if movie not in movies:
-            print("    That movie was not found. \n")
-            movie = input("    > Title of Movie you want to edit: ")
-        else:
-            break
-
-    print(f"    '{movie}' is currently {movies[movie]}. ")
-
-    while True:
-        try:
-            while True:
-                length = int(input("\n    > New Length (Minutes): "))
-                if movies[movie] == format_time(length):
-                    print("    This is already the length of the movie. "
-                          "Please enter a different time. ")
-                elif valid_time(length) is True:
-                    break
-                else:
-                    print("    Please enter a valid time. ")
-            formatted_time = format_time(length)
-            old_length = movies[movie]
-            movies[movie] = formatted_time
-            print("    " + "-" * 18)
-            print(f"\n    Edited '{movie}' ({old_length} -> {formatted_time})")
-            break
-        except ValueError:
-            print("    Please provide an integer. ")
-
-
-def exit_program():
-    print("Thank you for using Onsflix!")
-    quit()
+                print(f"        - Cartons of {i}: {int(stock[size] / i)}x")
+    print()
 
 
 def main():
-    """The main function. Will be using this one to call all the other
-    functions and ask the user for their choices. """
-
+    """This function will ask the user for their choice and check that it's
+    valid. It will then call the other functions that the user asked for. """
     while True:
         print_menu()
-        user_choice = input("> Enter a choice: ")
-        valid_answer = valid_choice(user_choice)
+        user_choice = input("> Enter a choice: ").strip().lower()
+        valid_answer = is_valid_choice(user_choice)
+
+        # While loop, which says sorry if the user answer is not valid,
+        # and then asks the user for another choice, which gets checked.
         while valid_answer is False:
             print("Sorry, that's not a valid choice. \n")
             print_menu()
 
-            user_choice = input("> Enter a choice: ")
-            valid_answer = valid_choice(user_choice)
+            user_choice = input("> Enter a choice: ").lower().strip()
+            valid_answer = is_valid_choice(user_choice)
 
-        menu_choice = [['a', 'd', 'l', 'e', 'q'],
-                       [add_movie, delete_movie, list_movies, edit_length,
-                        exit_program]]
+        menu_choices = [["a", "e", "l", "s", "r", "q"],
+                        [add_stock, edit_stock, list_stock]]
 
-        index = menu_choice[0].index(user_choice)
-        menu_choice[1][index]()
+        # The index of the letters and the function names in the menu_choices
+        # list. Find the index of the letter that the user entered, and use
+        # that to call the actual function.
+        LETTERS = 0
+        FUNCTION_NAMES = 1
+
+        index = menu_choices[LETTERS].index(user_choice)
+        menu_choices[FUNCTION_NAMES][index]()
 
 
 main()
